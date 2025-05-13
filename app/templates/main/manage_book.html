@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% from "_form_helpers.html" import render_field %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center">{{ title }}</h2>
+                {% if action == "Edit" and current_cover_image %}
+                <div class="text-center mb-3">
+                    <p>Current Cover Image:</p>
+                    <img src="{{ url_for('static', filename='uploads/' + current_cover_image) }}" alt="Current Cover" style="max-width: 200px; max-height: 200px;" class="img-thumbnail">
+                </div>
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data" novalidate> 
+                    {{ form.hidden_tag() }}
+                    {{ render_field(form.title) }}
+                    {{ render_field(form.author) }}
+                    {{ render_field(form.genre) }}
+                    {{ render_field(form.publication_year) }}
+                    {{ render_field(form.description) }}
+                    {{ render_field(form.cover_image) }}
+                    {% if form.cover_image.errors %}
+                        <div class="alert alert-danger">
+                        {% for error in form.cover_image.errors %}
+                            <span>{{ error }}</span><br>
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">{{ action }} Book</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <p class="text-center mt-3"><a href="{{ url_for('main.index') }}">Back to My Books</a></p>
+    </div>
+</div>
+{% endblock %}

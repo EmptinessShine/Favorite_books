@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 text-center mb-3 mb-md-0">
+        {% if book.cover_image_filename %}
+            <img src="{{ url_for('static', filename='uploads/' + book.cover_image_filename) }}" alt="{{ book.title }} Cover" class="img-fluid rounded shadow-sm" style="max-height: 400px;">
+        {% else %}
+            <img src="https://via.placeholder.com/300x400.png?text=No+Image" alt="No Image Available" class="img-fluid rounded shadow-sm">
+        {% endif %}
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">{{ book.title }}</h1>
+                <h5 class="card-subtitle mb-2 text-muted">By: {{ book.author }}</h5>
+                
+                {% if book.genre %}
+                    <p><strong>Genre:</strong> {{ book.genre }}</p>
+                {% endif %}
+                {% if book.publication_year %}
+                    <p><strong>Published:</strong> {{ book.publication_year }}</p>
+                {% endif %}
+                {% if book.description %}
+                    <p><strong>Description:</strong></p>
+                    <p style="white-space: pre-wrap;">{{ book.description }}</p>
+                {% endif %}
+                
+                <p><small class="text-muted">Added on: {{ book.timestamp.strftime('%B %d, %Y') }}</small></p>
+
+                <hr>
+                <a href="{{ url_for('main.edit_book', book_id=book.id) }}" class="btn btn-secondary">Edit Book</a>
+                <form action="{{ url_for('main.delete_book', book_id=book.id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this book?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token else '' }}"/>
+                    <button type="submit" class="btn btn-danger">Delete Book</button>
+                </form>
+                <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary float-end">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
